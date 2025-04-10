@@ -1,7 +1,7 @@
-import { ShoppingCart } from '@phosphor-icons/react'
-import { useTheme } from 'styled-components'
+import { ShoppingCart } from '@phosphor-icons/react';
+import { useTheme } from 'styled-components';
 
-import { QuantityInput } from '../Form/QuantityInput'
+import { QuantityInput } from '../Form/QuantityInput';
 import {
   CoffeeImg,
   Container,
@@ -11,7 +11,7 @@ import {
   Price,
   Tags,
   Title,
-} from './styles'
+} from './styles';
 
 type CoffeeCardProps = {
   coffee: {
@@ -21,45 +21,53 @@ type CoffeeCardProps = {
     tags: string[];
     price: number;
     image: string;
-    quantity: number
-  },
-  incrementQuantity: (id: string) => void
-  decrementQuantity: (id: string) => void
-}
+    quantity: number;
+  };
+  incrementQuantity: (id: string) => void;
+  decrementQuantity: (id: string) => void;
+};
 
-export function CoffeeCard({ }: CoffeeCardProps) {
+export function CoffeeCard({
+  coffee,
+  incrementQuantity,
+  decrementQuantity,
+}: CoffeeCardProps) {
   const theme = useTheme();
 
   function handleAddItem() {
-    console.log('Adicionar item ao carrinho')
+    console.log('Adicionar item ao carrinho');
     return;
   }
 
   return (
     <Container>
-      <CoffeeImg src={"/images/coffees/expresso-cremoso.png"} alt="Expresso Tradicional" />
+      <CoffeeImg src={coffee.image} alt={coffee.title} />
 
       <Tags>
-        {/** Aqui você pode mapear os tags do café */ }
-        <span key={'Tradicional'}>Tradicional</span>
-        <span key={'Comum'}>Comum</span>
+        {coffee.tags.map((tag) => (
+          <span key={tag}> {tag}</span>
+        ))}
       </Tags>
 
-      <Title>Expresso Tradicional</Title>
+      <Title>{coffee.title}</Title>
 
-      <Description>Café expresso tradicional com espuma cremosa</Description>
+      <Description>{coffee.description}</Description>
 
       <Control>
         <Price>
-          <span>R$</span>
-          <span>{4.90.toFixed(2)}</span> {/** Aqui você pode passar o preço do café */}
+          <span>R$ </span>
+          <span>{coffee.price}0</span>
         </Price>
 
         <Order $itemAdded={false}>
           <QuantityInput
-            quantity={5} // Aqui você pode passar a quantidade do café
-            incrementQuantity={() => {}} // Aqui você pode passar a função de incrementar
-            decrementQuantity={() => {}} // Aqui você pode passar a função de decrementar
+            quantity={coffee.quantity} // Aqui você pode passar a quantidade do café
+            incrementQuantity={() => {
+              incrementQuantity(coffee.id);
+            }} // Aqui você pode passar a função de incrementar
+            decrementQuantity={() => {
+              decrementQuantity(coffee.id);
+            }} // Aqui você pode passar a função de decrementar
           />
 
           <button onClick={handleAddItem}>
@@ -68,5 +76,5 @@ export function CoffeeCard({ }: CoffeeCardProps) {
         </Order>
       </Control>
     </Container>
-  )
+  );
 }
