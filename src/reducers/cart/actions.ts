@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-import { NavigateFunction } from 'react-router-dom'
-import { OrderInfo } from '../../pages/Cart'
-import { Item } from './reducer'
+import { NavigateFunction } from 'react-router-dom';
+import { OrderInfo } from '../../pages/Cart';
+import { Item } from './reducer';
 
 export enum ActionTypes {
   ADD_ITEM = 'ADD_ITEM',
@@ -11,30 +11,29 @@ export enum ActionTypes {
   DECREMENT_ITEM_QUANTITY = 'DECREMENT_ITEM_QUANTITY',
   CHECKOUT_CART = 'CHECKOUT_CART',
 }
-
 export type Actions =
   | {
-      type: ActionTypes.ADD_ITEM
+      type: ActionTypes.ADD_ITEM;
       payload: {
-        item: Item
-      }
+        item: Item;
+      };
     }
   | {
       type:
         | ActionTypes.DECREMENT_ITEM_QUANTITY
         | ActionTypes.INCREMENT_ITEM_QUANTITY
-        | ActionTypes.REMOVE_ITEM
+        | ActionTypes.REMOVE_ITEM;
       payload: {
-        itemId: Item['id']
-      }
+        itemId: Item['id'];
+      };
     }
   | {
-      type: ActionTypes.CHECKOUT_CART
+      type: ActionTypes.CHECKOUT_CART;
       payload: {
-        order: OrderInfo
-        callback: NavigateFunction
-      }
-    }
+        order: OrderInfo;
+        callback: NavigateFunction;
+      };
+    };
 
 export function addItemAction(item: Item) {
   return {
@@ -42,7 +41,7 @@ export function addItemAction(item: Item) {
     payload: {
       item,
     },
-  } satisfies Actions
+  } satisfies Actions;
 }
 
 export function removeItemAction(itemId: Item['id']) {
@@ -51,7 +50,7 @@ export function removeItemAction(itemId: Item['id']) {
     payload: {
       itemId,
     },
-  } satisfies Actions
+  } satisfies Actions;
 }
 
 export function incrementItemQuantityAction(itemId: Item['id']) {
@@ -60,7 +59,7 @@ export function incrementItemQuantityAction(itemId: Item['id']) {
     payload: {
       itemId,
     },
-  } satisfies Actions
+  } satisfies Actions;
 }
 
 export function decrementItemQuantityAction(itemId: Item['id']) {
@@ -69,12 +68,12 @@ export function decrementItemQuantityAction(itemId: Item['id']) {
     payload: {
       itemId,
     },
-  } satisfies Actions
+  } satisfies Actions;
 }
 
 export function checkoutCartAction(
   order: OrderInfo,
-  callback: NavigateFunction,
+  callback: NavigateFunction
 ) {
   return {
     type: ActionTypes.CHECKOUT_CART,
@@ -82,5 +81,5 @@ export function checkoutCartAction(
       order,
       callback,
     },
-  } satisfies Actions
+  } satisfies Actions;
 }

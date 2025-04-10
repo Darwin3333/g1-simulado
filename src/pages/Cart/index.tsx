@@ -1,9 +1,7 @@
-import { Fragment, useState } from 'react'
-import {
-  Trash,
-} from '@phosphor-icons/react'
+import { Fragment, useState } from 'react';
+import { Trash } from '@phosphor-icons/react';
 
-import { QuantityInput } from '../../components/Form/QuantityInput'
+import { QuantityInput } from '../../components/Form/QuantityInput';
 import {
   CartTotal,
   CartTotalInfo,
@@ -12,16 +10,16 @@ import {
   CoffeeInfo,
   Container,
   InfoContainer,
-} from './styles'
-import { Tags } from '../../components/CoffeeCard/styles'
+} from './styles';
+import { Tags } from '../../components/CoffeeCard/styles';
 
 export interface Item {
-  id: string
-  quantity: number
+  id: string;
+  quantity: number;
 }
 export interface Order {
-  id: number
-  items: CoffeeInCart[]
+  id: number;
+  items: CoffeeInCart[];
 }
 
 interface CoffeeInCart {
@@ -33,75 +31,96 @@ interface CoffeeInCart {
   image: string;
   quantity: number;
   subTotal: number;
-} 
+}
 
-const DELIVERY_PRICE = 3.75;
+const DELIVERY_PRICE = 13.99;
 
 export function Cart() {
   const [coffeesInCart, setCoffeesInCart] = useState<CoffeeInCart[]>([
     {
-      id: "0",
-      title: "Expresso Tradicional",
-      description: "O tradicional café feito com água quente e grãos moídos",
-      tags: ["tradicional", "gelado"],
-      price: 6.90,
-      image: "/images/coffees/expresso.png",
+      id: '0',
+      title: 'Expresso Tradicional',
+      description: 'O tradicional café feito com água quente e grãos moídos',
+      tags: ['tradicional', 'gelado'],
+      price: 6.9,
+      image: '/images/coffees/expresso.png',
       quantity: 1,
-      subTotal: 6.90,
+      subTotal: 6.9,
     },
+
     {
-      id: "1",
-      title: "Expresso Americano",
-      description: "Expresso diluído, menos intenso que o tradicional",
-      tags: ["tradicional", "com leite"],
+      id: '1',
+      title: 'Expresso Americano',
+      description: 'Expresso diluído, menos intenso que o tradicional',
+      tags: ['tradicional', 'com leite'],
       price: 9.95,
-      image: "/images/coffees/americano.png",
+      image: '/images/coffees/americano.png',
       quantity: 2,
-      subTotal: 19.90,
+      subTotal: 19.9,
     },
     {
-      id: "2",
-      title: "Expresso Cremoso",
-      description: "Café expresso tradicional com espuma cremosa",
-      tags: ["especial"],
-      price: 16.50,
-      image: "/images/coffees/expresso-cremoso.png",
+      id: '2',
+      title: 'Expresso Cremoso',
+      description: 'Café expresso tradicional com espuma cremosa',
+      tags: ['especial'],
+      price: 16.5,
+      image: '/images/coffees/expresso-cremoso.png',
       quantity: 3,
-      subTotal: 49.50,
-    }
+      subTotal: 9.5,
+    },
   ]);
 
   const amountTags: string[] = [];
-  
+
   /** Adicionando os tags dos cafés no array amountTags
-   * Se o tag já existir, não adiciona*/ 
-  coffeesInCart.map(coffee => coffee.tags.map((tag) => {
-    if (!amountTags.includes(tag)) {
-      amountTags.push(tag);
-    }
-  }));
-  
+   * Se o tag já existir, não adiciona*/
+  coffeesInCart.map((coffee) =>
+    coffee.tags.map((tag) => {
+      if (!amountTags.includes(tag)) {
+        amountTags.push(tag);
+      }
+    })
+  );
+
   // valor total dos cafés no carrinho
   const totalItemsPrice = coffeesInCart.reduce((currencyValue, coffee) => {
-    return currencyValue + coffee.price * coffee.quantity
-  }, 0)
+    return currencyValue + coffee.price * coffee.quantity;
+  }, 0);
 
-  
   function handleItemIncrement(itemId: string) {
-    // coloque seu código aqui
+    const newCartCoffee2 = coffeesInCart.map((coffe) =>
+      coffe.id === itemId
+        ? {
+            ...coffe,
+            quantity: coffe.quantity + 1,
+            subTotal: coffe.price * coffe.quantity,
+          }
+        : coffe
+    );
+
+    setCoffeesInCart(newCartCoffee2);
   }
 
   function handleItemDecrement(itemId: string) {
-    // coloque seu código aqui
+    const newCartCoffee = coffeesInCart.map((coffe) =>
+      coffe.id === itemId && coffe.quantity > 1
+        ? { ...coffe, quantity: coffe.quantity - 1 }
+        : coffe
+    );
+
+    setCoffeesInCart(newCartCoffee);
   }
 
   function handleItemRemove(itemId: string) {
-    // coloque seu código aqui
+    const newCartCoffee3 = coffeesInCart.filter(
+      (coffee) => coffee.id !== itemId
+    );
+
+    setCoffeesInCart(newCartCoffee3);
   }
-  
+
   return (
     <Container>
-
       <InfoContainer>
         <h2>Cafés selecionados</h2>
 
@@ -114,11 +133,11 @@ export function Cart() {
 
                   <div>
                     <span>{coffee.title}</span>
-                      <Tags>
-                        {coffee.tags.map((tag) => (
-                          <span key={tag}>{tag}</span>
-                        ))}
-                      </Tags>
+                    <Tags>
+                      {coffee.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </Tags>
 
                     <CoffeeInfo>
                       <QuantityInput
@@ -135,7 +154,9 @@ export function Cart() {
                   </div>
                 </div>
 
-                <aside>R$ {coffee.subTotal?.toFixed(2)}</aside>
+                <aside>
+                  R$ {(coffee.quantity * coffee.subTotal).toFixed(2)}
+                </aside>
               </Coffee>
 
               <span />
@@ -169,7 +190,7 @@ export function Cart() {
                 {new Intl.NumberFormat('pt-br', {
                   currency: 'BRL',
                   style: 'currency',
-                }).format(totalItemsPrice + (DELIVERY_PRICE * amountTags.length))}
+                }).format(totalItemsPrice + DELIVERY_PRICE)}
               </span>
             </div>
           </CartTotalInfo>
@@ -180,5 +201,5 @@ export function Cart() {
         </CartTotal>
       </InfoContainer>
     </Container>
-  )
+  );
 }

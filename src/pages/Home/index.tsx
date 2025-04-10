@@ -1,11 +1,12 @@
-import { Coffee, Package, ShoppingCart, Timer } from '@phosphor-icons/react'
-import { useTheme } from 'styled-components'
+import { Coffee, Package, ShoppingCart, Timer } from '@phosphor-icons/react';
+import { useTheme } from 'styled-components';
 
-import { CoffeeCard } from '../../components/CoffeeCard'
+import { CoffeeCard } from '../../components/CoffeeCard';
 
-import { CoffeeList, Heading, Hero, HeroContent, Info } from './styles'
-import { useEffect } from 'react';
-
+import { CoffeeList, Heading, Hero, HeroContent, Info } from './styles';
+import { useEffect, useState } from 'react';
+import { api } from '../../serves/api';
+import { Loading } from '../../components/Loading';
 interface Coffee {
   id: string;
   title: string;
@@ -14,24 +15,45 @@ interface Coffee {
   price: number;
   image: string;
   quantity: number;
-};
+}
 
 export function Home() {
   const theme = useTheme();
+  const [coffees, setCoffees] = useState<Coffee[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function getData() {
+    const response = await api.get('/coffees');
+    //console.log(response.data);
+
+    setCoffees(response.data);
+    setLoading(false);
+  }
 
   useEffect(() => {
-    // request para a API para pegar os cafés
-    // e setar no estado
+    getData();
   }, []);
 
-
-  
   function incrementQuantity(id: string) {
-    // Aqui você pode fazer a lógica para incrementar a quantidade do café
+    //preciso primeiro criar uma nova lista  e passar o map
+    const newCoffeess = coffees.map(
+      (
+        coffee //e depois lembrar do ...coffee, quantity : coffee.quantity + 1
+      ) =>
+        coffee.id === id ? { ...coffee, quantity: coffee.quantity + 1 } : coffee //o rest copia tudo, e altera o novo valor de quantity :
+    );
+
+    setCoffees(newCoffeess);
   }
 
   function decrementQuantity(id: string) {
-    // Aqui você pode fazer a lógica para decrementar a quantidade do café
+    const newCoffees1 = coffees.map(
+      (coffee) =>
+        coffee.id === id && coffee.quantity >= 1
+          ? { ...coffee, quantity: coffee.quantity - 1 }
+          : coffee //preciso ver se tem quantidade, senao fica negativo nee
+    );
+    setCoffees(newCoffees1);
   }
 
   return (
@@ -99,24 +121,29 @@ export function Home() {
 
       <CoffeeList>
         <h2>Nossos cafés</h2>
-
-        <div>
-        {[1,2,3].map((coffee) => (
-            <CoffeeCard key={coffee} coffee={{
-              description: 'Café expresso tradicional com espuma cremosa',
-              id: '1',
-              image: "/images/coffees/expresso-cremoso.png",
-              price: 9.90,
-              tags: ['Tradicional', 'Comum'],
-              title: 'Expresso Tradicional',
-              quantity: 1,
-            }}
-            incrementQuantity={incrementQuantity}
-            decrementQuantity={decrementQuantity}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div>
+            {coffees.map((coffee) => (
+              <CoffeeCard
+                key={coffee.id}
+                coffee={{
+                  description: coffee.description, //sao atributos da propriedade Coffee.
+                  id: coffee.description,
+                  image: coffee.image,
+                  price: 9.9,
+                  tags: coffee.tags,
+                  title: coffee.title,
+                  quantity: coffee.quantity,
+                }}
+                incrementQuantity={() => incrementQuantity(coffee.id)}
+                decrementQuantity={() => decrementQuantity(coffee.id)}
+              />
+            ))}
+          </div>
+        )}
       </CoffeeList>
     </div>
-  )
+  );
 }
